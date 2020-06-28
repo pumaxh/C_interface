@@ -6,9 +6,10 @@
 #include "atom.h"
 #include "mem.h"
 
+extern const char *Atom_new(const char *str, int len);
+
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
 #define ALLOC(len)    malloc((size_t)(len))
-
 
 static unsigned long scatter[] = {
 2078917053, 143302914, 1027100827, 1953210302, 755253631, 2002600785,
@@ -56,13 +57,13 @@ static unsigned long scatter[] = {
 1884137923, 53392249, 1735424165, 1602280572
 };
 
-static struct atom {
+typedef struct atom {
     struct atom *lnk;
     int  len ;
     char *str;
-}*buckets[2048];
+} atom_t;
 
-typedef struct atom atom_t;
+static atom_t **buckets = NULL;
 
 const char *Atom_string(const char *str) {
     assert(str);
@@ -111,33 +112,40 @@ static unsigned long Atom_get_hash_idx(const char *str, int len)
     return h;
 }
 
+bool Atom_is_same(const char *str, int len, atom_t *p)
+{
+    if(len != p->len)
+    {
+        return false;
+    }
+
+    for(i = 0; i< len; i++)
+    {
+        if(p->str[i] != str[i])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 const char *Atom_new(const char *str, int len) {
     unsigned long h;
-    int i ;
     atom_t *p;
 
     assert(str);
     assert(len >= 0);
+    assert(buckets != NULL);
 
     h = Atom_get_hash_idx(str, len);
 
     /* if str already in buckets, just return it */
     for(p = buckets[h]; p!= NULL; p = p->lnk)
     {
-        if(len == p->len)
+        if(Atom_is_same(str, len, p))
         {
-            for(i = 0; i< len; i++)
-            {
-                if(p->str[i] != str[i])
-                {
-                    break;
-                }
-            }
-
-            if(i == len)
-            {
-                return p->str;
-            }
+            return p->str;
         }
     }
 
@@ -164,7 +172,7 @@ int Atome_length(const char *str)
 
     h = Atom_get_hash_idx(str, strlen(str));
 
-    for(p = buckets[h]; p; p->lnk)
+    for(p = buckets[h]; p; p = p->lnk)
     {
         if(p->str == str)
         {
@@ -172,7 +180,46 @@ int Atome_length(const char *str)
         }
     }
 
-    /* search for none exist char, force carsh */
+    /* search for not exist char, force carsh */
     assert(0);
     return 0;
+}
+
+void Atom_init(int hint)
+{
+    assert(hint > 0);
+
+    if(hint%2 ==0)
+    {
+        hint++;
+    }
+
+    buckets = (atom_t **)ALLOC(sizeof(atom_t *) * hint);
+    assert(buckets != NULL);
+}
+
+void Atom_free(const char *str)
+{
+    atom_t *cur;
+    atom_t *prev;
+    assert(str != NULL);
+    int len = strlen(str);
+
+    h = Atom_get_hash_idx(str, len);
+    for(cur = buckets[h], prev = NULL; cur;prev = cur,cur = cur->lnk)
+    {
+        if(Atom_is_same(str, len, cur))
+        {
+            if(prev == NULL)
+            {
+                buckets[h] = cur->lnk;
+            }
+            else
+            {
+                prev->lnk = cur->lnk;
+            }
+            free(cur);
+        }
+    }
+
 }
