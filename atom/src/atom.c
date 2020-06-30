@@ -1,7 +1,9 @@
 #include<string.h>
 #include<assert.h>
 #include<limits.h>
-#include <stdlib.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<stdio.h>
 
 #include "atom.h"
 #include "mem.h"
@@ -10,6 +12,7 @@ extern const char *Atom_new(const char *str, int len);
 
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
 #define ALLOC(len)    malloc((size_t)(len))
+#define DELETE(x)     free((void *)x)
 
 static unsigned long scatter[] = {
 2078917053, 143302914, 1027100827, 1953210302, 755253631, 2002600785,
@@ -64,6 +67,7 @@ typedef struct atom {
 } atom_t;
 
 static atom_t **buckets = NULL;
+static unsigned int buckets_len = 0;
 
 const char *Atom_string(const char *str) {
     assert(str);
@@ -119,7 +123,7 @@ bool Atom_is_same(const char *str, int len, atom_t *p)
         return false;
     }
 
-    for(i = 0; i< len; i++)
+    for(int i = 0; i< len; i++)
     {
         if(p->str[i] != str[i])
         {
@@ -164,7 +168,7 @@ const char *Atom_new(const char *str, int len) {
     return p->str;
 }
 
-int Atome_length(const char *str)
+int Atom_length(const char *str)
 {
     atom_t *p;
     assert(str);
@@ -180,9 +184,7 @@ int Atome_length(const char *str)
         }
     }
 
-    /* search for not exist char, force carsh */
-    assert(0);
-    return 0;
+    return -1;
 }
 
 void Atom_init(int hint)
@@ -195,6 +197,8 @@ void Atom_init(int hint)
     }
 
     buckets = (atom_t **)ALLOC(sizeof(atom_t *) * hint);
+    buckets_len = hint;
+    memset(buckets, 0, sizeof(atom_t *) * hint);
     assert(buckets != NULL);
 }
 
@@ -205,7 +209,7 @@ void Atom_free(const char *str)
     assert(str != NULL);
     int len = strlen(str);
 
-    h = Atom_get_hash_idx(str, len);
+    int h = Atom_get_hash_idx(str, len);
     for(cur = buckets[h], prev = NULL; cur;prev = cur,cur = cur->lnk)
     {
         if(Atom_is_same(str, len, cur))
@@ -218,8 +222,26 @@ void Atom_free(const char *str)
             {
                 prev->lnk = cur->lnk;
             }
-            free(cur);
+            printf("free atom[%s]\n", cur->str);
+            DELETE(cur);
+            return;
         }
     }
 
+}
+
+void Atom_reset()
+{
+    assert(buckets != NULL);
+    for(unsigned int idx =0; idx < buckets_len; idx++)
+    {
+        atom_t *next = NULL;
+        for(atom_t *cur = buckets[idx]; cur; cur = next)
+        {
+            next = cur->lnk;
+            printf("free atom[%s]\n", cur->str);
+            DELETE(cur);
+        }
+        buckets[idx] = NULL;
+    }
 }

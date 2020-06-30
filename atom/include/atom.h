@@ -6,6 +6,7 @@ extern const char *Atom_string(const char *str);
 extern const char * Atom_int(long n);
 extern void Atom_init(int hint);
 extern void Atom_free(const char *str);
-extern void Atom_reset(void);
+extern void Atom_reset();
+extern unsigned int Atom_num();
 
 #endif // ATOM_H
