@@ -4,11 +4,14 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    main.c \
-    atom/src/atom.c
+    atom/src/atom.c \
+    exception/src/exception.c \
+    main.c
 
 
 HEADERS += \
-    atom/include/atom.h
+    atom/include/atom.h \
+    exception/include/exception.h
 
 INCLUDEPATH += $$PWD/atom/include
+INCLUDEPATH += $$PWD/exception/include
