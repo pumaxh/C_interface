@@ -11,8 +11,6 @@
 extern const char *Atom_new(const char *str, int len);
 
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
-#define ALLOC(len)    malloc((size_t)(len))
-#define DELETE(x)     free((void *)x)
 
 static unsigned long scatter[] = {
 2078917053, 143302914, 1027100827, 1953210302, 755253631, 2002600785,
