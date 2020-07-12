@@ -7,6 +7,8 @@
 
 const Except_T Mem_Failed = {"Allocation Failed"};
 
+#ifndef MEM_CHK
+
 void *Mem_alloc(long nbytes, const char *file, int line)
 {
     void *ptr;
@@ -21,7 +23,7 @@ void *Mem_alloc(long nbytes, const char *file, int line)
         }
         else
         {
-            Except_raise(&Mem_Failed, __FILE__, __LINE__);
+            Except_raise(&Mem_Failed, file, line);
         }
     }
     return ptr;
@@ -43,16 +45,16 @@ void *Mem_calloc(long count, long nbytes, const char *file,  int line)
         }
         else
         {
-            Except_raise(&Mem_Failed, __FILE__, __LINE__);
+            Except_raise(&Mem_Failed, file, line);
         }
     }
     return ptr;
 }
 
-void *Mem_free(void *ptr, const char *file, int line)
+void Mem_free(void *ptr, const char *file, int line)
 {
     if(ptr)
-        free(ptr);
+        free(ptr);    
 }
 
 void *Mem_resize(void *ptr, long nbytes, const char *file, int line)
@@ -69,9 +71,10 @@ void *Mem_resize(void *ptr, long nbytes, const char *file, int line)
         }
         else
         {
-            Except_raise(&Mem_Failed, __FILE__, __LINE__);
+            Except_raise(&Mem_Failed, file, line);
         }
     }
     return ptr;
 }
 
+#endif

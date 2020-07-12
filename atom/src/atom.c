@@ -221,7 +221,7 @@ void Atom_free(const char *str)
                 prev->lnk = cur->lnk;
             }
             printf("free atom[%s]\n", cur->str);
-            DELETE(cur);
+            FREE(cur);
             return;
         }
     }
@@ -238,7 +238,7 @@ void Atom_reset()
         {
             next = cur->lnk;
             printf("free atom[%s]\n", cur->str);
-            DELETE(cur);
+            FREE(cur);
         }
         buckets[idx] = NULL;
     }

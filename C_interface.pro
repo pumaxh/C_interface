@@ -19,3 +19,5 @@ HEADERS += \
 INCLUDEPATH += $$PWD/atom/include
 INCLUDEPATH += $$PWD/exception/include
 INCLUDEPATH += $$PWD/mem/include
+
+DEFINES += MEM_CHK
