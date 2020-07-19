@@ -5,7 +5,7 @@
 
 int atom_test()
 {
-    Atom_init(7);
+    Atom_initial(7);
     const char *a1 = Atom_int(7);
     const char *a2 = Atom_string("test");
     const char *a3 = Atom_int(999999);

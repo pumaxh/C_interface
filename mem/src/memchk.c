@@ -17,7 +17,7 @@ union align {
 };
 
 #define NDESCRIPTORS                 512
-#define MEMCHK_HASH(p, t)  ((((unsigned long) (p)) >> 3) & (sizeof(t)/sizeof(((t)[0]) - 1)))
+#define MEMCHK_HASH(p, t)  ((((unsigned long) (p)) >> 3) & (sizeof(t)/sizeof((t)[0]) - 1))
 #define MEMCHK_IS_VALID(ptr)         (((unsigned long) ptr) % (sizeof(union align)) != 0 \
                                       || (bp = find(ptr)) == NULL || bp->free)
 #define MEM_ROUND_UP(nbytes)        (((nbytes + sizeof(union align) - 1) / (sizeof(union align)))*(sizeof(union align)))
@@ -25,7 +25,7 @@ union align {
 
 //data
 
-static struct descriptor
+struct descriptor
 {
     struct descriptor *free;
     struct descriptor *link;
@@ -37,7 +37,7 @@ static struct descriptor
 
 typedef struct descriptor descriptor_t;
 
-static descriptor_t freelist = { &freelist, NULL, NULL, 0, __FILE__, 0 };
+descriptor_t freelist = { &freelist, NULL, NULL, 0, __FILE__, 0 };
 
 #ifdef MEM_CHK
 
@@ -56,8 +56,15 @@ void Mem_free(void *ptr, const char *file, int line)
     if(ptr)
     {
         descriptor_t *bp;
-        if(((unsigned long) ptr) % (sizeof(union align)) != 0
-                || (bp = find(ptr)) == NULL || bp->free){
+
+        /* buffer size point by ptr can be divide not ptr */
+        /*if(((unsigned long) ptr) % (sizeof(union align)) != 0)
+        {
+            Except_raise(&Mem_Failed, file, line);
+        }*/
+
+        if((bp = find(ptr)) == NULL || bp->free)
+        {
             Except_raise(&Mem_Failed, file, line);
         }
 

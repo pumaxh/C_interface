@@ -185,7 +185,7 @@ int Atom_length(const char *str)
     return -1;
 }
 
-void Atom_init(int hint)
+void Atom_initial(int hint)
 {
     assert(hint > 0);
 
@@ -225,7 +225,6 @@ void Atom_free(const char *str)
             return;
         }
     }
-
 }
 
 void Atom_reset()
