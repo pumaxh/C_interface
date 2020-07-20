@@ -2,6 +2,9 @@
 #include <assert.h>
 
 #include "atom.h"
+#include "arena.h"
+
+Arena_T *g_arena;
 
 int atom_test()
 {
@@ -23,8 +26,24 @@ int atom_test()
     return 0;
 }
 
+int arena_test()
+{
+    Arena_T *g_arena = Arena_new();
+    char *str1 = (char *)Arena_alloc(g_arena, 1024, __FILE__, __LINE__);
+    snprintf(str1, 1023, "str1: !!!!!!!!!!!!" );
+    Arena_free(g_arena);
+
+    char *str2 = (char *)Arena_alloc(g_arena, 1024, __FILE__, __LINE__);
+    snprintf(str2, 1023, "str2: !!!!!!!!!!!!" );
+
+    Arena_dispose(&g_arena);
+    assert(g_arena == NULL);
+    printf("Arena test pass!");
+    return 0;
+}
+
 int main()
 {
-    assert(atom_test() == 0);
+    assert(arena_test() == 0);
     return 0;
 }
