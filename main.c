@@ -3,6 +3,7 @@
 
 #include "atom.h"
 #include "arena.h"
+#include "list.h"
 
 Arena_T *g_arena;
 
@@ -42,8 +43,32 @@ int arena_test()
     return 0;
 }
 
+void list_show_element(void **elem, void *cl)
+{
+    assert(elem != NULL);
+    printf("element[%s] ", (char *)(*elem));
+}
+
+int list_test()
+{
+    char *rst;
+    int isLast;
+    List_T_p list1 = List_list("first");
+    list1 = List_push(list1, "second");
+    List_T_p list2 = List_list("1");
+    list1 = List_append(list1, list2);
+    printf("after append\n");
+    List_map(list1, list_show_element, NULL);
+    list1 = List_revers(list1);
+    printf("after reverse\n");
+    List_map(list1, list_show_element, NULL);
+    List_pop(list1, &rst);
+    printf("pop elem[%s]\n", rst);
+    return 0;
+}
+
 int main()
 {
-    assert(arena_test() == 0);
+    assert(list_test() == 0);
     return 0;
 }
