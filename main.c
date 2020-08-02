@@ -54,6 +54,7 @@ int list_test()
     char *rst;
     int isLast;
     List_T_p list1 = List_list("first");
+    List_map(list1, list_show_element, NULL);
     list1 = List_push(list1, "second");
     List_T_p list2 = List_list("1");
     list1 = List_append(list1, list2);
@@ -62,7 +63,7 @@ int list_test()
     list1 = List_revers(list1);
     printf("after reverse\n");
     List_map(list1, list_show_element, NULL);
-    List_pop(list1, &rst);
+    List_pop(list1, (void **)&rst);
     printf("pop elem[%s]\n", rst);
     return 0;
 }

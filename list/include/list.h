@@ -13,7 +13,7 @@ struct List_T {
 
 extern PT   List_append(PT list, PT tail);
 extern PT   List_copy(PT list);
-extern PT   List_list(void *x, ...);
+extern PT   List_list(void *x);
 extern PT   List_pop(PT list, void **x);
 extern PT   List_push(PT list, void *x);
 extern PT   List_revers(PT list);

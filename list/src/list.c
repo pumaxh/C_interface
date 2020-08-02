@@ -18,20 +18,21 @@ PT List_push(PT list, void *x)
     return p;
 }
 
-PT List_list(void *x, ...)
+PT List_list(void *x)
+// only init first element
 {
-    va_list ap;
+    // va_list ap;
     PT list, *p = &list;
 
-    va_start(ap, x);
-    for(; x; x = va_arg(ap, void *))
-    {
+    // va_start(ap, x);
+    // for(; x; x = va_arg(ap, void *))
+    // {
         NEW(*p);
         (*p)->first = x;
         p = &(*p)->rest;
-    }
+    // }
     *p = NULL;
-    va_end(ap);
+    // va_end(ap);
     return list;
 }
 
