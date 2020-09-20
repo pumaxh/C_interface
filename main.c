@@ -5,6 +5,8 @@
 #include "arena.h"
 #include "list.h"
 
+#define UNUSED(x)  (x = x)
+
 Arena_T *g_arena;
 
 int atom_test()
@@ -45,26 +47,29 @@ int arena_test()
 
 void list_show_element(void **elem, void *cl)
 {
+    UNUSED(cl);
     assert(elem != NULL);
-    printf("element[%s] ", (char *)(*elem));
+    printf("element[%s]\n", (char *)(*elem));
 }
 
 int list_test()
 {
     char *rst;
-    int isLast;
+    printf("list initial\n");
     List_T_p list1 = List_list("first");
     List_map(list1, list_show_element, NULL);
     list1 = List_push(list1, "second");
     List_T_p list2 = List_list("1");
     list1 = List_append(list1, list2);
-    printf("after append\n");
+    printf("list after append\n");
     List_map(list1, list_show_element, NULL);
     list1 = List_revers(list1);
-    printf("after reverse\n");
+    printf("list after reverse\n");
     List_map(list1, list_show_element, NULL);
-    List_pop(list1, (void **)&rst);
+    list1 = List_pop(list1, (void **)&rst);
     printf("pop elem[%s]\n", rst);
+    printf("list after pop\n");
+    List_map(list1, list_show_element, NULL);
     return 0;
 }
 

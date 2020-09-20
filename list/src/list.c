@@ -29,9 +29,8 @@ PT List_list(void *x)
     // {
         NEW(*p);
         (*p)->first = x;
-        p = &(*p)->rest;
+        (*p)->rest  = NULL;
     // }
-    *p = NULL;
     // va_end(ap);
     return list;
 }
@@ -79,7 +78,7 @@ PT List_pop(PT list, void **x)
 
 PT List_revers(PT list)
 {
-    PT head = NULL, next;
+    PT head = NULL, next = NULL;
 
     for(; list; list = next)
     {
